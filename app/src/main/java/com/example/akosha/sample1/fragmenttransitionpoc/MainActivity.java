@@ -67,7 +67,14 @@ public class MainActivity extends AppCompatActivity implements Fragment2.onFragB
         if (fragment instanceof Fragment2) {
             fragmentStack.pop();
             fragmentStack.push(new Fragment1());
+        } else {
+            if (!fragmentStack.pop()) {
+                super.onBackPressed();
+            } else {
+                Log.d(TAG, "true");
+            }
         }
+        //// TODO: 17/03/16 add super.onBackPressed Functionality here
 
 //        if (!fragmentStack.pop()) {
 //            super.onBackPressed();
