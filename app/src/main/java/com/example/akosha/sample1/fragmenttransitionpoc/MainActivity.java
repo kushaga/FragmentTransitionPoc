@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements Fragment2.onFragB
     private static final String TAG = MainActivity.class.getSimpleName();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private final String backStack = "backStack";
-    private FragmentStack fragmentStack;
+    private MyFragmentStack fragmentStack;
     private TextView helloText;
 
     @Override
@@ -22,13 +22,14 @@ public class MainActivity extends AppCompatActivity implements Fragment2.onFragB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //add a fragment to the activity
-        fragmentStack = new FragmentStack(this, fragmentManager, R.id.fragmentLayout, new FragmentStack.OnFragmentRemovedListener() {
+        fragmentStack = new MyFragmentStack(this, fragmentManager, R.id.fragmentLayout, new MyFragmentStack.OnFragmentRemovedListener() {
             @Override
             public void onFragmentRemoved(Fragment fragment) {
                 //// TODO: 16/03/16 write something useful
                 Log.d(TAG, fragment.getClass().getSimpleName());
             }
         });
+
 
         if (savedInstanceState == null) {
             fragmentStack.push(new Fragment1());
@@ -60,11 +61,19 @@ public class MainActivity extends AppCompatActivity implements Fragment2.onFragB
 
     @Override
     public void onBackPressed() {
-        if (!fragmentStack.pop()) {
-            super.onBackPressed();
-        } else {
-            Log.d(TAG, "true");
+        //tell the current running fragment that backpressed has happened
+        Fragment fragment = fragmentStack.peek();
+
+        if (fragment instanceof Fragment2) {
+            fragmentStack.pop();
+            fragmentStack.push(new Fragment1());
         }
+
+//        if (!fragmentStack.pop()) {
+//            super.onBackPressed();
+//        } else {
+//            Log.d(TAG, "true");
+//        }
     }
 
     public void replace(Fragment fragment) {

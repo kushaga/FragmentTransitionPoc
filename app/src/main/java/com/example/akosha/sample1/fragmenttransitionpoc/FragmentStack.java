@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class FragmentStack {
             manager.beginTransaction()
                     .remove(top)
                     .add(containerId, fragment, indexToTag(manager.getBackStackEntryCount() + 1))
-                    .addToBackStack(null)
+                    .addToBackStack(fragment.getClass().getName())
                     .commit();
         } else {
             manager.beginTransaction()
@@ -95,8 +96,8 @@ public class FragmentStack {
             onFragmentRemovedListener.onFragmentRemoved(top);
 
         //replace with the current seeked fragment
-        Fragment top1 = peek();
-        manager.beginTransaction().replace(containerId, top1).commit();
+//        Fragment top1 = peek();
+//        manager.beginTransaction().replace(containerId, top1).commit();
 
         return true;
     }
@@ -108,7 +109,7 @@ public class FragmentStack {
         List<Fragment> fragments = getFragments();
 
         try {
-            manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            manager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (Exception e) {
             if (e != null) {
                 e.printStackTrace();
@@ -116,13 +117,17 @@ public class FragmentStack {
         }
 
         manager.beginTransaction()
-                .replace(containerId, fragment)
+                .add(containerId, fragment)
                 .commit();
-        manager.executePendingTransactions();
+
+        boolean b = manager.executePendingTransactions();
+        Log.d("tag", "done: " + b);
 
         if (onFragmentRemovedListener != null) {
-            for (Fragment fragment1 : fragments)
+            for (Fragment fragment1 : fragments) {
+                Log.d("tag", "done: " + fragment1);
                 onFragmentRemovedListener.onFragmentRemoved(fragment1);
+            }
         }
     }
 

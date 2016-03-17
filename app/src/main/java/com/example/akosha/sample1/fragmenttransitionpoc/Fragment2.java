@@ -73,7 +73,7 @@ public class Fragment2 extends Fragment implements FragmentStack.OnBackPressedHa
     @Override
     public boolean onBackPressed() {
         Log.d(TAG, "on back pressed");
-        ((MainActivity) this.getActivity()).push(new Fragment1());
+//        ((MainActivity) this.getActivity()).push(new Fragment1());
         return true;
     }
 
